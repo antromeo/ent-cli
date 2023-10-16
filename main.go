@@ -1,6 +1,6 @@
 package main
 
-import "ent/cmd"
+import "ent-cli/cmd"
 
 func main() {
 	cmd.Execute()
