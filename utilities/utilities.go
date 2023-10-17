@@ -1,6 +1,7 @@
 package utilities
 
 import (
+	"bufio"
 	. "ent-cli/constants"
 	"fmt"
 	"github.com/spf13/viper"
@@ -78,4 +79,38 @@ func WriteYamlToFile(filePath string, data interface{}) {
 	if err != nil {
 		log.Fatalf("Error writing to file: %v", err)
 	}
+}
+
+func ReadFileToYaml(filePath string, data interface{}) {
+	fileContent, err := os.ReadFile(filePath)
+	if err != nil {
+		log.Fatalf("Error reading the file: %v", err)
+	}
+	if err := yaml.Unmarshal(fileContent, data); err != nil {
+		log.Fatalf("Error unmarshaling YAML: %v", err)
+	}
+}
+
+func ReadString(inputText string, required bool) string {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print(inputText + ": ")
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+	if required {
+		for len(input) == 0 {
+			fmt.Print("Input cannot be empty. Please enter a non-empty string: ")
+			input, _ = reader.ReadString('\n')
+			input = strings.TrimSpace(input)
+		}
+	}
+
+	return input
+}
+
+func IsEmpty(str string) bool {
+	if len(str) == 0 {
+		return true
+	}
+	return false
 }
