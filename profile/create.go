@@ -1,15 +1,14 @@
 package profile
 
 import (
-	"bufio"
 	. "ent-cli/constants"
+	"ent-cli/utilities"
 	"fmt"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 var createCmd = &cobra.Command{
@@ -22,14 +21,14 @@ var createCmd = &cobra.Command{
 		appName, _ := cmd.Flags().GetString("appname")
 		namespace, _ := cmd.Flags().GetString("namespace")
 
-		if len(name) == 0 {
-			name = readRequiredString("Enter Profile Name")
+		if utilities.IsEmpty(name) {
+			name = utilities.ReadString("Enter Profile Name", true)
 		}
-		if len(appName) == 0 {
-			appName = readRequiredString("Enter Entando App Name")
+		if utilities.IsEmpty(appName) {
+			appName = utilities.ReadString("Enter Entando App Name", true)
 		}
-		if len(namespace) == 0 {
-			namespace = readRequiredString("Enter Namespace")
+		if utilities.IsEmpty(namespace) {
+			namespace = utilities.ReadString("Enter Namespace", true)
 		}
 
 		profileConfig := ProfileConfig{
@@ -55,20 +54,6 @@ var createCmd = &cobra.Command{
 		}
 		fmt.Printf("Profile created\n")
 	},
-}
-
-func readRequiredString(inputText string) string {
-	reader := bufio.NewReader(os.Stdin)
-
-	fmt.Print(inputText + ": ")
-	input, _ := reader.ReadString('\n')
-	input = strings.TrimSpace(input)
-	for len(input) == 0 {
-		fmt.Print("Input cannot be empty. Please enter a non-empty string: ")
-		input, _ = reader.ReadString('\n')
-		input = strings.TrimSpace(input)
-	}
-	return input
 }
 
 func init() {
