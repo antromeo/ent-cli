@@ -16,7 +16,7 @@ var deleteCmd = &cobra.Command{
 
 		listProfiles, _ := utilities.GetProfiles()
 		for i, fileName := range listProfiles {
-			fmt.Printf("%d) %s\n", i+1, fileName.Name())
+			fmt.Printf("%d) %s\n", i+1, fileName)
 		}
 
 		fmt.Print("Enter the number of the profile you want to delete: ")
@@ -29,12 +29,12 @@ var deleteCmd = &cobra.Command{
 
 		selectedProfile := listProfiles[selection-1]
 
-		err = os.RemoveAll(utilities.GetProfileFilePath(selectedProfile.Name()))
+		err = os.RemoveAll(utilities.GetProfileFilePath(selectedProfile))
 		if err != nil {
 			fmt.Printf("Error removing profile: %v\n", err)
 			return
 		}
-		fmt.Printf("Profile %s removed\n", selectedProfile.Name())
+		fmt.Printf("Profile %s removed\n", selectedProfile)
 
 	},
 }

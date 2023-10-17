@@ -46,7 +46,7 @@ func initConfig() {
 	viper.AddConfigPath(home)
 	viper.SetConfigType("yaml")
 
-	viper.SetConfigName(filepath.Join(EntFolder, GlobalConfigFile))
+	viper.SetConfigName(filepath.Join(EntFolder, GlobalConfigFileName))
 
 	if err := viper.ReadInConfig(); err == nil {
 		//fmt.Fprintln(os.Stderr, "Using global config file:", viper.ConfigFileUsed())
@@ -88,12 +88,12 @@ func createEntDirectories() {
 		if err != nil {
 			log.Fatalf("Error marshaling YAML: %v", err)
 		}
-		err = os.WriteFile(filepath.Join(profiles, ConfigFile+".yaml"), yamlData, 0644)
+		err = os.WriteFile(filepath.Join(profiles, ConfigFile+".yaml"), yamlData, 0600)
 		if err != nil {
 			log.Fatalf("Error writing to file: %v", err)
 		}
 
-		globalCfgFile := filepath.Join(directoryPath, GlobalConfigFile+".yaml")
+		globalCfgFile := filepath.Join(directoryPath, GlobalConfigFileName+".yaml")
 		if _, err := os.Stat(globalCfgFile); os.IsNotExist(err) {
 			_, err := os.Create(globalCfgFile)
 			if err != nil {
@@ -123,10 +123,6 @@ func createEntDirectories() {
 			//os.Exit(1)
 		}
 	}
-}
-
-type Config struct {
-	DesignedProfile string `yaml:"designedProfile"`
 }
 
 func addSubCommands() {

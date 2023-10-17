@@ -18,7 +18,7 @@ var listCmd = &cobra.Command{
 		}
 		fmt.Println("profile availables:")
 		for _, file := range files {
-			fmt.Println(file.Name())
+			fmt.Println(file)
 		}
 	},
 }
