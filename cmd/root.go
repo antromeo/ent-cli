@@ -3,10 +3,10 @@ package cmd
 import (
 	. "ent-cli/constants"
 	"ent-cli/profile"
+	"ent-cli/utilities"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"path/filepath"
@@ -48,8 +48,8 @@ func initConfig() {
 
 	viper.SetConfigName(filepath.Join(EntFolder, GlobalConfigFileName))
 
-	if err := viper.ReadInConfig(); err == nil {
-		//fmt.Fprintln(os.Stderr, "Using global config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config file: %v", err)
 	}
 
 	viper.SetConfigName(filepath.Join(EntFolder, ProfilesFolder, viper.GetString("designedProfile"), ConfigFile))
@@ -61,67 +61,49 @@ func initConfig() {
 }
 
 func createEntDirectories() {
-	// Perform directory creation or other installation tasks here.
-	// For example, create a directory when the application is installed.
-	home, _ := os.UserHomeDir()
-	directoryPath := filepath.Join(home, EntFolder)
+
+	entFolderFilePath := utilities.GetEntFolderFilePath()
 
 	// Check if the directory already exists.
-	if _, err := os.Stat(directoryPath); os.IsNotExist(err) {
-		// Directory doesn't exist, create it.
-		profiles := filepath.Join(directoryPath, ProfilesFolder, DefaultProfile)
-		err := os.MkdirAll(profiles, os.ModePerm)
-		if err != nil {
-			fmt.Printf("Error creating directory: %v\n", err)
-			return
-			//os.Exit(1)
+	if _, err := os.Stat(entFolderFilePath); os.IsNotExist(err) {
+		// Directory doesn't exist, create the default profile files.
+		createDefaultProfileDirectories()
+		createGlobalConfigFile()
+
+	}
+}
+
+func createDefaultProfileDirectories() {
+	defaultProfileFilePath := utilities.GetProfileFilePath(DefaultProfile)
+
+	err := os.MkdirAll(defaultProfileFilePath, 0770)
+	if err != nil {
+		fmt.Printf("Error creating directory: %v\n", err)
+		return
+	}
+
+	defaultProfileConfig := ProfileConfig{
+		AppName:    "quickstart",
+		Namespace:  "entando",
+		DesignedVM: "entando",
+	}
+
+	utilities.WriteYamlToFile(utilities.GetEntConfigFilePathByProfile(DefaultProfile), defaultProfileConfig)
+}
+
+func createGlobalConfigFile() {
+	globalCfgFilePath := utilities.GetEntGlobalConfigFilePath()
+
+	if _, err := os.Stat(globalCfgFilePath); os.IsNotExist(err) {
+		globalConfig := Config{
+			DesignedProfile: DefaultProfile,
 		}
 
-		profileConfig := ProfileConfig{
-			AppName:    "quickstart",
-			Namespace:  "entando",
-			DesignedVM: "entando",
-		}
+		utilities.WriteYamlToFile(globalCfgFilePath, globalConfig)
 
-		// Marshal the configuration to YAML format.
-		yamlData, err := yaml.Marshal(&profileConfig)
-		if err != nil {
-			log.Fatalf("Error marshaling YAML: %v", err)
-		}
-		err = os.WriteFile(filepath.Join(profiles, ConfigFile+".yaml"), yamlData, 0600)
-		if err != nil {
-			log.Fatalf("Error writing to file: %v", err)
-		}
-
-		globalCfgFile := filepath.Join(directoryPath, GlobalConfigFileName+".yaml")
-		if _, err := os.Stat(globalCfgFile); os.IsNotExist(err) {
-			_, err := os.Create(globalCfgFile)
-			if err != nil {
-				fmt.Printf("Error creating global-cfg file: %v\n", err)
-				return
-				//os.Exit(1)
-			}
-
-			globalConfig := Config{
-				DesignedProfile: DefaultProfile,
-			}
-
-			// Marshal the configuration to YAML format.
-			yamlData, err := yaml.Marshal(&globalConfig)
-			if err != nil {
-				log.Fatalf("Error marshaling YAML: %v", err)
-			}
-			err = os.WriteFile(globalCfgFile, yamlData, 0644)
-			if err != nil {
-				log.Fatalf("Error writing to file: %v", err)
-			}
-
-		} else if err != nil {
-			// An error occurred while checking the directory existence.
-			fmt.Printf("Error checking directory: %v\n", err)
-			return
-			//os.Exit(1)
-		}
+	} else if err != nil {
+		fmt.Printf("Error checking directory: %v\n", err)
+		os.Exit(1)
 	}
 }
 

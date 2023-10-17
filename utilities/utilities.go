@@ -4,6 +4,8 @@ import (
 	. "ent-cli/constants"
 	"fmt"
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -39,9 +41,15 @@ func GetProfiles() ([]string, error) {
 	return dirNames, nil
 }
 
-func GetEntFilePath() string {
+func GetEntFolderFilePath() string {
 	home, _ := os.UserHomeDir()
 	return filepath.Join(home, EntFolder)
+}
+
+func GetEntConfigFilePathByProfile(profile string) string {
+	extension := "yaml"
+	cfg := strings.Join([]string{ConfigFile, extension}, ".")
+	return filepath.Join(GetProfileFilePath(profile), cfg)
 }
 
 func GetEntGlobalConfigFilePath() string {
@@ -59,4 +67,15 @@ func GetProfilesFilePath() string {
 func GetProfileFilePath(profile string) string {
 	home, _ := os.UserHomeDir()
 	return filepath.Join(home, EntFolder, ProfilesFolder, profile)
+}
+
+func WriteYamlToFile(filePath string, data interface{}) {
+	yamlData, err := yaml.Marshal(&data)
+	if err != nil {
+		log.Fatalf("Error marshaling YAML: %v", err)
+	}
+	err = os.WriteFile(filePath, yamlData, 0600)
+	if err != nil {
+		log.Fatalf("Error writing to file: %v", err)
+	}
 }
