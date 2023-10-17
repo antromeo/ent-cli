@@ -10,8 +10,8 @@ import (
 	"slices"
 )
 
-// setCmd represents the set command
-var setCmd = &cobra.Command{
+// useCmd represents the set command
+var useCmd = &cobra.Command{
 	Use:        "use [profileName]",
 	Short:      "Selects the profile that ent should use",
 	Long:       "Selects the profile that ent should use",
@@ -56,7 +56,7 @@ var setCmd = &cobra.Command{
 }
 
 func init() {
-	ProfileCmd.AddCommand(setCmd)
+	ProfileCmd.AddCommand(useCmd)
 
 	// Here you will define your flags and configuration settings.
 
