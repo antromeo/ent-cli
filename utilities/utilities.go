@@ -114,3 +114,9 @@ func IsEmpty(str string) bool {
 	}
 	return false
 }
+
+func ShowAdditionalCommandsInHelp() {
+	fmt.Println("ADDITIONAL COMMANDS")
+	fmt.Println("  deploy       Generates the CR and deploys it to the currently attached EntandoApp")
+	fmt.Println("  install      Installs into currently attached EntandoApp the bundle in the current directory")
+}
