@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"ent-cli/cmd/profile"
 	. "ent-cli/constants"
-	"ent-cli/profile"
 	"ent-cli/utilities"
 	"fmt"
 	"github.com/spf13/cobra"
