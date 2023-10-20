@@ -19,15 +19,16 @@ var useCmd = &cobra.Command{
 	ArgAliases: []string{"profileName"},
 
 	Run: func(cmd *cobra.Command, args []string) {
+		entandoConfig := utilities.GetEntandoConfigInstance()
 		profile := args[0]
-		profiles, _ := utilities.GetProfiles()
+		profiles, _ := entandoConfig.GetProfiles()
 
 		if !slices.Contains(profiles, profile) {
 			fmt.Println("Profile selected not found")
 			os.Exit(1)
 		}
 
-		fileContent, err := os.ReadFile(utilities.GetEntGlobalConfigFilePath())
+		fileContent, err := os.ReadFile(entandoConfig.GetEntGlobalConfigFilePath())
 		if err != nil {
 			fmt.Println("Error loading the profile", err)
 			return
@@ -46,7 +47,7 @@ var useCmd = &cobra.Command{
 			return
 		}
 
-		if err := os.WriteFile(utilities.GetEntGlobalConfigFilePath(), updatedContent, 0600); err != nil {
+		if err := os.WriteFile(entandoConfig.GetEntGlobalConfigFilePath(), updatedContent, 0600); err != nil {
 			fmt.Println("Error writing to the file:", err)
 			return
 		}

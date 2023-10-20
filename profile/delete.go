@@ -13,8 +13,8 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete a profile",
 	Long:  "Delete a profile",
 	Run: func(cmd *cobra.Command, args []string) {
-
-		listProfiles, _ := utilities.GetProfiles()
+		entandoConfig := utilities.GetEntandoConfigInstance()
+		listProfiles, _ := entandoConfig.GetProfiles()
 		for i, fileName := range listProfiles {
 			fmt.Printf("%d) %s\n", i+1, fileName)
 		}
@@ -29,7 +29,7 @@ var deleteCmd = &cobra.Command{
 
 		selectedProfile := listProfiles[selection-1]
 
-		err = os.RemoveAll(utilities.GetProfileFilePath(selectedProfile))
+		err = os.RemoveAll(entandoConfig.GetProfileFilePath(selectedProfile))
 		if err != nil {
 			fmt.Printf("Error removing profile: %v\n", err)
 			return

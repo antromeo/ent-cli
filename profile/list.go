@@ -11,8 +11,10 @@ var listCmd = &cobra.Command{
 	Short: "Shows a list of available profiles",
 	Long:  "Shows a list of available profiles",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Currently using profile \"%s\"\n", utilities.GetProfile())
-		files, err := utilities.GetProfiles()
+		entandoConfig := utilities.GetEntandoConfigInstance()
+		profile := entandoConfig.GetProfile()
+		fmt.Printf("Currently using profile \"%s\"\n", profile)
+		files, err := entandoConfig.GetProfiles()
 		if err != nil {
 			return
 		}

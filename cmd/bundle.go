@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"ent-cli/constants"
 	"ent-cli/utilities"
 	"fmt"
 	"os/exec"
@@ -16,7 +17,7 @@ var bundleCmd = &cobra.Command{
 	Long:  "Management of new generation entando bundles",
 	Run: func(cmd *cobra.Command, args []string) {
 		var versions map[string]interface{}
-		var entBundleVersion = "latest"
+		var entBundleVersion = constants.DefaultTag
 		utilities.ReadFileToYaml("releases/releases.yaml", &versions)
 		if value, found := versions["entando_bundle_cli"]; found {
 			fmt.Printf("entando_bundle_cli: %v\n", value)

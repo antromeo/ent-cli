@@ -40,29 +40,27 @@ func init() {
 }
 
 func initConfig() {
-	home, err := os.UserHomeDir()
-	cobra.CheckErr(err)
+	entandoConfig := utilities.GetEntandoConfigInstance()
 
-	viper.AddConfigPath(home)
-	viper.SetConfigType("yaml")
+	viper.AddConfigPath(entandoConfig.GetHomeDir())
 
 	viper.SetConfigName(filepath.Join(EntFolder, GlobalConfigFileName))
-
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Error reading config file: %v", err)
 	}
 
-	viper.SetConfigName(filepath.Join(EntFolder, ProfilesFolder, viper.GetString("designedProfile"), ConfigFile))
-
-	viper.MergeInConfig()
+	viper.SetConfigName(filepath.Join(EntFolder, ProfilesFolder, entandoConfig.GetProfile(), ConfigFile))
+	if err := viper.MergeInConfig(); err != nil {
+		log.Fatalf("Error reading profile config file: %v", err)
+	}
 
 	viper.AutomaticEnv()
 
 }
 
 func createEntDirectories() {
-
-	entFolderFilePath := utilities.GetEntFolderFilePath()
+	entandoConfig := utilities.GetEntandoConfigInstance()
+	entFolderFilePath := entandoConfig.GetEntFolderFilePath()
 
 	// Check if the directory already exists.
 	if _, err := os.Stat(entFolderFilePath); os.IsNotExist(err) {
@@ -74,7 +72,8 @@ func createEntDirectories() {
 }
 
 func createDefaultProfileDirectories() {
-	defaultProfileFilePath := utilities.GetProfileFilePath(DefaultProfile)
+	entandoConfig := utilities.GetEntandoConfigInstance()
+	defaultProfileFilePath := entandoConfig.GetProfileFilePath(DefaultProfile)
 
 	err := os.MkdirAll(defaultProfileFilePath, 0770)
 	if err != nil {
@@ -88,11 +87,12 @@ func createDefaultProfileDirectories() {
 		DesignedVM: "entando",
 	}
 
-	utilities.WriteYamlToFile(utilities.GetEntConfigFilePathByProfile(DefaultProfile), defaultProfileConfig)
+	utilities.WriteYamlToFile(entandoConfig.GetEntConfigFilePathByProfile(DefaultProfile), defaultProfileConfig)
 }
 
 func createGlobalConfigFile() {
-	globalCfgFilePath := utilities.GetEntGlobalConfigFilePath()
+	entandoConfig := utilities.GetEntandoConfigInstance()
+	globalCfgFilePath := entandoConfig.GetEntGlobalConfigFilePath()
 
 	if _, err := os.Stat(globalCfgFilePath); os.IsNotExist(err) {
 		globalConfig := Config{

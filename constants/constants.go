@@ -6,6 +6,7 @@ const (
 	ProfilesFolder       = "profiles"
 	GlobalConfigFileName = "global-cfg"
 	ConfigFile           = "cfg"
+	DefaultTag           = "latest"
 )
 
 type Config struct {

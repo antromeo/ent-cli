@@ -13,7 +13,8 @@ var currentCmd = &cobra.Command{
 	Short: "Shows the current profile",
 	Long:  "Shows the current profiles",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Currently using profile \"%s\"\n", utilities.GetProfile())
+		entandoConfig := utilities.GetEntandoConfigInstance()
+		fmt.Printf("Currently using profile \"%s\"\n", entandoConfig.GetProfile())
 	},
 }
 

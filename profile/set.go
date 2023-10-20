@@ -14,10 +14,11 @@ var setCmd = &cobra.Command{
 	Short: "Sets appname and namespace of the current profile",
 	Long:  "sets appname and namespace of the current profile",
 	Run: func(cmd *cobra.Command, args []string) {
+		entandoConfig := utilities.GetEntandoConfigInstance()
 		appName, _ := cmd.Flags().GetString("appname")
 		namespace, _ := cmd.Flags().GetString("namespace")
 
-		configFilePath := utilities.GetEntConfigFilePathByProfile(utilities.GetProfile())
+		configFilePath := entandoConfig.GetEntConfigFilePathByProfile(entandoConfig.GetProfile())
 		var config constants.ProfileConfig
 		utilities.ReadFileToYaml(configFilePath, &config)
 
