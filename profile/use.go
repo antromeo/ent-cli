@@ -5,7 +5,6 @@ import (
 	"ent-cli/utilities"
 	"fmt"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 	"os"
 	"slices"
 )
@@ -28,29 +27,13 @@ var useCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fileContent, err := os.ReadFile(entandoConfig.GetEntGlobalConfigFilePath())
-		if err != nil {
-			fmt.Println("Error loading the profile", err)
-			return
-		}
 		var config constants.Config
-		if err := yaml.Unmarshal(fileContent, &config); err != nil {
-			fmt.Println("Error unmarshaling profile config:", err)
-			return
-		}
+		utilities.ReadFileToYaml(entandoConfig.GetEntGlobalConfigFilePath(), &config)
 
 		config.DesignedProfile = profile
 
-		updatedContent, err := yaml.Marshal(config)
-		if err != nil {
-			fmt.Println("Error marshaling profile config:", err)
-			return
-		}
+		utilities.WriteYamlToFile(entandoConfig.GetEntGlobalConfigFilePath(), config)
 
-		if err := os.WriteFile(entandoConfig.GetEntGlobalConfigFilePath(), updatedContent, 0600); err != nil {
-			fmt.Println("Error writing to the file:", err)
-			return
-		}
 		fmt.Println("The designated profile has been updated")
 
 	},
