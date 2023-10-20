@@ -44,7 +44,7 @@ func TestGetProfilesFilePath(t *testing.T) {
 	}
 }
 
-func TestGetProfileFilePath2(t *testing.T) {
+func TestGetProfileFilePath(t *testing.T) {
 	filePath := entandoConfig.GetProfileFilePath("bob")
 	expectedFilePath := filepath.Join(customDir, ".ent", "profiles", "bob")
 
@@ -53,7 +53,7 @@ func TestGetProfileFilePath2(t *testing.T) {
 	}
 }
 
-func TestGetEntConfigFilePathByProfile2(t *testing.T) {
+func TestGetEntConfigFilePathByProfile(t *testing.T) {
 	filePath := entandoConfig.GetEntConfigFilePathByProfile("bob")
 	expectedFilePath := filepath.Join(customDir, ".ent", "profiles", "bob", "cfg.yaml")
 
