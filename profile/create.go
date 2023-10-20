@@ -5,10 +5,7 @@ import (
 	"ent-cli/utilities"
 	"fmt"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
-	"log"
 	"os"
-	"path/filepath"
 )
 
 var createCmd = &cobra.Command{
@@ -35,23 +32,17 @@ var createCmd = &cobra.Command{
 			AppName:   appName,
 			Namespace: namespace,
 		}
-		home, _ := os.UserHomeDir()
 
-		// Marshal the configuration to YAML format.
-		yamlData, err := yaml.Marshal(&profileConfig)
-		if err != nil {
-			log.Fatalf("Error marshaling YAML: %v", err)
-		}
-		profileFolder := filepath.Join(home, EntFolder, ProfilesFolder, name)
-		err = os.MkdirAll(profileFolder, os.ModePerm)
+		entandoConfig := utilities.GetEntandoConfigInstance()
+		profileFolder := entandoConfig.GetProfileFilePath(name)
+
+		err := os.MkdirAll(profileFolder, 0770)
 		if err != nil {
 			fmt.Printf("Error creating directory: %v\n", err)
 			return
 		}
-		err = os.WriteFile(filepath.Join(profileFolder, ConfigFile+".yaml"), yamlData, 0644)
-		if err != nil {
-			log.Fatalf("Error writing to file: %v", err)
-		}
+
+		utilities.WriteYamlToFile(entandoConfig.GetEntConfigFilePathByProfile(name), profileConfig)
 		fmt.Printf("Profile created\n")
 	},
 }
