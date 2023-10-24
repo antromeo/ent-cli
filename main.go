@@ -1,6 +1,6 @@
 package main
 
-import "ent-cli/cmd"
+import "github.com/antromeo/ent-cli/v2/cmd"
 
 func main() {
 	cmd.Execute()

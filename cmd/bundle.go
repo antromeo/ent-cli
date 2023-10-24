@@ -1,13 +1,12 @@
 package cmd
 
 import (
-	"ent-cli/constants"
-	"ent-cli/utilities"
 	"fmt"
+	"github.com/antromeo/ent-cli/v2/constants"
+	"github.com/antromeo/ent-cli/v2/utilities"
+	"github.com/spf13/cobra"
 	"os/exec"
 	"slices"
-
-	"github.com/spf13/cobra"
 )
 
 // bundleCmd represents the bundle command
@@ -30,6 +29,7 @@ var bundleCmd = &cobra.Command{
 
 		if slices.Contains(args, "deploy") {
 			// TODO: implementation
+			// attach volume for bundle
 		}
 
 		podmanCmd := exec.Command("podman", cmdLine[0:]...)

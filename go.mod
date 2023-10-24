@@ -1,4 +1,4 @@
-module ent-cli
+module github.com/antromeo/ent-cli/v2
 
 go 1.21
 

@@ -1,9 +1,8 @@
 package profile
 
 import (
-	"ent-cli/utilities"
 	"fmt"
-
+	"github.com/antromeo/ent-cli/v2/utilities"
 	"github.com/spf13/cobra"
 )
 

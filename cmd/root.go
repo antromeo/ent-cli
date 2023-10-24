@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"ent-cli/cmd/profile"
-	. "ent-cli/constants"
-	"ent-cli/utilities"
 	"fmt"
+	"github.com/antromeo/ent-cli/v2/cmd/profile"
+	. "github.com/antromeo/ent-cli/v2/constants"
+	"github.com/antromeo/ent-cli/v2/utilities"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"

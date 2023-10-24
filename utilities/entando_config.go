@@ -1,8 +1,8 @@
 package utilities
 
 import (
-	. "ent-cli/constants"
 	"fmt"
+	. "github.com/antromeo/ent-cli/v2/constants"
 	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
