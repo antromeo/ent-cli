@@ -6,7 +6,7 @@ const (
 	ProfilesFolder       = "profiles"
 	GlobalConfigFileName = "global-cfg"
 	ConfigFile           = "cfg"
-	DefaultTag           = "latest"
+	ContainerRuntime     = "podman"
 )
 
 type Config struct {

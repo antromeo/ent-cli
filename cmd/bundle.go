@@ -23,7 +23,7 @@ var bundleCmd = &cobra.Command{
 			// attach volume for bundle
 		}
 
-		podmanCmd := exec.Command("podman", cmdLine[0:]...)
+		podmanCmd := exec.Command(constants.ContainerRuntime, cmdLine[0:]...)
 
 		// Capture the command's standard output and error
 		output, _ := podmanCmd.CombinedOutput()
