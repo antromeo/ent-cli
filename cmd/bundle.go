@@ -23,7 +23,7 @@ var bundleCmd = &cobra.Command{
 	Long:  "Management of new generation entando bundles",
 	Run: func(cmd *cobra.Command, args []string) {
 		entBundleImage := strings.Join([]string{constants.EntandoBundleRepository, constants.EntandoBundleCliVersion}, ":")
-		cmdLine := append([]string{"run", "-t", entBundleImage}, args...)
+		cmdLine := append([]string{"run", "-t", "-v", ".:/app", entBundleImage}, args...)
 
 		if slices.Contains(args, "deploy") {
 			deployOnCluster(entBundleImage)
