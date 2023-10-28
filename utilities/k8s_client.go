@@ -2,6 +2,7 @@ package utilities
 
 import (
 	"flag"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
@@ -10,7 +11,9 @@ import (
 )
 
 type KubeClient struct {
-	ClientSet *kubernetes.Clientset
+	ClientSet     *kubernetes.Clientset
+	DynamicClient *dynamic.DynamicClient
+	Namespace     string
 }
 
 var kubeClient *KubeClient
@@ -33,7 +36,18 @@ func GetKubeClientInstance() *KubeClient {
 		if err != nil {
 			panic(err)
 		}
-		kubeClient = &KubeClient{ClientSet: clientset}
+		dynamicClient, err := dynamic.NewForConfig(config)
+		if err != nil {
+			panic(err)
+		}
+		clientCfg, err := clientcmd.NewDefaultClientConfigLoadingRules().Load()
+		namespace := clientCfg.Contexts[clientCfg.CurrentContext].Namespace
+		kubeClient = &KubeClient{
+			ClientSet:     clientset,
+			DynamicClient: dynamicClient,
+			Namespace:     namespace,
+		}
+
 	})
 	return kubeClient
 }
