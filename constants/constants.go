@@ -1,6 +1,8 @@
 package constants
 
-import "k8s.io/apimachinery/pkg/runtime/schema"
+import (
+	"k8s.io/apimachinery/pkg/runtime/schema"
+)
 
 const (
 	DefaultProfile          = "default"
@@ -26,4 +28,10 @@ var EntandoDeBundleGroupVersionResource = schema.GroupVersionResource{
 	Group:    "entando.org",
 	Version:  "v1",
 	Resource: "entandodebundles",
+}
+
+var EntandoResourcesTemplates = []string{
+	"https://raw.githubusercontent.com/entando/entando-releases/%s/dist/ge-1-1-6/namespace-scoped-deployment/cluster-resources.yaml",
+	"https://raw.githubusercontent.com/entando/entando-releases/%s/dist/ge-1-1-6/namespace-scoped-deployment/namespace-resources.yaml",
+	"https://raw.githubusercontent.com/entando/entando-releases/%s/dist/ge-1-1-6/samples/entando-operator-config.yaml",
 }

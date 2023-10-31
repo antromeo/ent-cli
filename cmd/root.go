@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/antromeo/ent-cli/v2/cmd/profile"
+	"github.com/antromeo/ent-cli/v2/cmd/quickstart"
 	. "github.com/antromeo/ent-cli/v2/constants"
 	"github.com/antromeo/ent-cli/v2/utilities"
 	"github.com/spf13/cobra"
@@ -109,4 +110,5 @@ func createGlobalConfigFile() {
 
 func addSubCommands() {
 	rootCmd.AddCommand(profile.ProfileCmd)
+	rootCmd.AddCommand(quickstart.QuickstartCmd)
 }
