@@ -5,9 +5,7 @@ import (
 	"github.com/antromeo/ent-cli/v2/constants"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
-	"io"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -75,8 +73,7 @@ var startCmd = &cobra.Command{
 
 		fmt.Printf("namespace %s created\n", namespace)
 
-		entandoTemplates := downloadEntandoTemplates(entandoVersion)
-		applyEntandoTemplates(entandoTemplates, namespace)
+		applyEntandoTemplates(namespace, entandoVersion)
 		applyEntandoApp(namespace, instanceIp)
 
 		appBuilderAddress := strings.Join([]string{"quickstart", instanceIp, "nip.io/app-builder/"}, ".")
@@ -108,17 +105,11 @@ func init() {
 	startCmd.MarkFlagRequired("entando-version")
 }
 
-func applyEntandoTemplates(entandoTemplates [][]byte, namespace string) {
-	for index, template := range entandoTemplates {
-		fileName := fmt.Sprintf("templates-%d.yaml", index)
-		entandoTemplateFilePath := filepath.Join(os.TempDir(), fileName)
-		err := os.WriteFile(entandoTemplateFilePath, template, 0600)
-		if err != nil {
-			fmt.Printf("Error writing template: %v\n", err)
-			os.Exit(1)
-		}
-		execCmd := exec.Command("minikube", "kubectl", "--", "-n", namespace, "apply", "-f", entandoTemplateFilePath)
-		_, err = execCmd.CombinedOutput()
+func applyEntandoTemplates(namespace string, version string) {
+	for _, urlTemplate := range constants.EntandoResourcesTemplates {
+		templateUrl := fmt.Sprintf(urlTemplate, version)
+		execCmd := exec.Command("minikube", "kubectl", "--", "-n", namespace, "apply", "-f", templateUrl)
+		_, err := execCmd.CombinedOutput()
 		if err != nil {
 			fmt.Printf("Error applied the templates: %v\n", err)
 			os.Exit(1)
@@ -146,35 +137,6 @@ func applyEntandoApp(namespace string, ip string) {
 		os.Exit(1)
 	}
 
-}
-func downloadEntandoTemplates(version string) [][]byte {
-	var entandoTemplates [][]byte
-	for _, urlTemplate := range constants.EntandoResourcesTemplates {
-		url := fmt.Sprintf(urlTemplate, version)
-		template := httpGet(url)
-		entandoTemplates = append(entandoTemplates, template)
-	}
-	return entandoTemplates
-
-}
-
-func httpGet(url string) []byte {
-	response, err := http.Get(url)
-	if err != nil {
-		fmt.Println("Error making HTTP request: ", err)
-		os.Exit(1)
-	}
-	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK {
-		fmt.Println("HTTP request failed with status code: ", response.Status)
-		os.Exit(1)
-	}
-	data, err := io.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println("Error reading HTTP response: ", err)
-		os.Exit(1)
-	}
-	return data
 }
 
 func getEntandoApp(namespace string, ip string) *unstructured.Unstructured {
