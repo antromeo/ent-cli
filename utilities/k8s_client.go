@@ -2,8 +2,8 @@ package utilities
 
 import (
 	"flag"
-	"github.com/antromeo/entando-clients/pkg/client/clientset/versioned"
 	entandoclients "github.com/antromeo/entando-clients/pkg/client/clientset/versioned"
+	pipelineclients "github.com/tektoncd/pipeline/pkg/client/clientset/versioned"
 	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -13,10 +13,11 @@ import (
 )
 
 type KubeClient struct {
-	ClientSet        *kubernetes.Clientset
-	EntandoClientSet *versioned.Clientset
-	DynamicClient    *dynamic.DynamicClient
-	Namespace        string
+	ClientSet         *kubernetes.Clientset
+	EntandoClientSet  *entandoclients.Clientset
+	PipelineClientSet *pipelineclients.Clientset
+	DynamicClient     *dynamic.DynamicClient
+	Namespace         string
 }
 
 var kubeClient *KubeClient
@@ -47,13 +48,18 @@ func GetKubeClientInstance() *KubeClient {
 		if err != nil {
 			panic(err)
 		}
+		pipelineclients, err := pipelineclients.NewForConfig(config)
+		if err != nil {
+			panic(err)
+		}
 		clientCfg, err := clientcmd.NewDefaultClientConfigLoadingRules().Load()
 		namespace := clientCfg.Contexts[clientCfg.CurrentContext].Namespace
 		kubeClient = &KubeClient{
-			ClientSet:        clientset,
-			EntandoClientSet: entandoclientset,
-			DynamicClient:    dynamicClient,
-			Namespace:        namespace,
+			ClientSet:         clientset,
+			EntandoClientSet:  entandoclientset,
+			PipelineClientSet: pipelineclients,
+			DynamicClient:     dynamicClient,
+			Namespace:         namespace,
 		}
 
 	})
