@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/antromeo/entando-clients v0.0.0-20231110110740-5d4002b48ff0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
