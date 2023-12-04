@@ -5,6 +5,7 @@ import (
 	"github.com/antromeo/ent-cli/v2/cmd/app"
 	"github.com/antromeo/ent-cli/v2/cmd/profile"
 	"github.com/antromeo/ent-cli/v2/cmd/quickstart"
+	"github.com/antromeo/ent-cli/v2/cmd/tenant"
 	. "github.com/antromeo/ent-cli/v2/constants"
 	"github.com/antromeo/ent-cli/v2/utilities"
 	"github.com/spf13/cobra"
@@ -113,4 +114,5 @@ func addSubCommands() {
 	rootCmd.AddCommand(profile.ProfileCmd)
 	rootCmd.AddCommand(quickstart.QuickstartCmd)
 	rootCmd.AddCommand(app.AppCmd)
+	rootCmd.AddCommand(tenant.TenantCmd)
 }
