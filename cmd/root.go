@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/antromeo/ent-cli/v2/cmd/app"
+	"github.com/antromeo/ent-cli/v2/cmd/config"
 	"github.com/antromeo/ent-cli/v2/cmd/ecr"
 	"github.com/antromeo/ent-cli/v2/cmd/profile"
 	"github.com/antromeo/ent-cli/v2/cmd/quickstart"
@@ -117,4 +118,5 @@ func addSubCommands() {
 	rootCmd.AddCommand(app.AppCmd)
 	rootCmd.AddCommand(tenant.TenantCmd)
 	rootCmd.AddCommand(ecr.EcrCmd)
+	rootCmd.AddCommand(config.ConfigCmd)
 }
