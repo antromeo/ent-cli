@@ -35,3 +35,11 @@ var EntandoResourcesTemplates = []string{
 	"https://raw.githubusercontent.com/entando/entando-releases/%s/dist/ge-1-1-6/namespace-scoped-deployment/namespace-resources.yaml",
 	"https://raw.githubusercontent.com/entando/entando-releases/%s/dist/ge-1-1-6/samples/entando-operator-config.yaml",
 }
+
+type EcrApisType struct {
+	Components string
+}
+
+var EcrApis = EcrApisType{
+	Components: "components",
+}
