@@ -10,6 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -94,4 +95,15 @@ func GetEntandoIngressesPath(protocol string) *types.EntandoIngressesPath {
 		AppBuilder: strings.Join([]string{hostname, "app-builder"}, "/"),
 		Ecr:        strings.Join([]string{hostname, "digital-exchange"}, "/"),
 	}
+}
+
+func IsValidURL(input string) bool {
+	regexPattern := `^[^:]*://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]`
+	match, err := regexp.MatchString(regexPattern, input)
+	if err != nil {
+		fmt.Println("Error compiling regex:", err)
+		return false
+	}
+
+	return match
 }
