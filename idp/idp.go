@@ -32,9 +32,19 @@ func RetrieveClientParameters() types.ClientSecret {
 	// internal
 	appName := viper.GetString("EntandoAppName")
 	deSecretName := strings.Join([]string{appName, "de-secret"}, "-")
-	keycloakSecret, _ := k8sClient.ClientSet.CoreV1().Secrets(k8sClient.Namespace).Get(context.TODO(), deSecretName, metav1.GetOptions{})
+	keycloakSecret, err := k8sClient.ClientSet.CoreV1().Secrets(k8sClient.Namespace).Get(context.TODO(), deSecretName, metav1.GetOptions{})
 
-	ssoIngress, _ := k8sClient.ClientSet.NetworkingV1().Ingresses(k8sClient.Namespace).Get(context.TODO(), "default-sso-in-namespace-ingress", metav1.GetOptions{})
+	if err != nil {
+		fmt.Printf("error retrieving client params: %s\n", err)
+		os.Exit(1)
+	}
+
+	ssoIngress, err := k8sClient.ClientSet.NetworkingV1().Ingresses(k8sClient.Namespace).Get(context.TODO(), "default-sso-in-namespace-ingress", metav1.GetOptions{})
+
+	if err != nil {
+		fmt.Printf("error retrieving client params: %s\n", err)
+		os.Exit(1)
+	}
 
 	return types.ClientSecret{
 		ClientId:     string(keycloakSecret.Data["clientId"]),
