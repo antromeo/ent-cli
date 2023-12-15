@@ -3,6 +3,8 @@ package utilities
 import (
 	"bufio"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"github.com/antromeo/ent-cli/v2/types"
 	"github.com/spf13/viper"
@@ -106,4 +108,17 @@ func IsValidURL(input string) bool {
 	}
 
 	return match
+}
+
+func HashAndTruncate(input string) string {
+	hash := sha256.New()
+	hash.Write([]byte(input))
+	hashString := hex.EncodeToString(hash.Sum(nil))
+	return hashString[:8]
+}
+
+func NormalizeName(input string) string {
+	pattern := "[_:./]"
+	regex := regexp.MustCompile(pattern)
+	return regex.ReplaceAllString(input, "-")
 }

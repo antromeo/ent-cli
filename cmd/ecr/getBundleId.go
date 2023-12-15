@@ -1,8 +1,6 @@
 package ecr
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"github.com/antromeo/ent-cli/v2/utilities"
 	"github.com/spf13/cobra"
@@ -21,24 +19,15 @@ var getBundleIdCmd = &cobra.Command{
 			fmt.Println("The URL is not valid.")
 			os.Exit(1)
 		}
-		fmt.Printf("%v\n", hashAndTruncate(args[0]))
+		// Extract the registry from the repository URL
+		repoUrl := strings.SplitN(args[0], "://", 2)
+		repoName := repoUrl[1]
+		if len(repoUrl) != 2 {
+			fmt.Printf("invalid input format\n")
+			os.Exit(1)
+		}
+		fmt.Printf("%v\n", utilities.HashAndTruncate(repoName))
 	},
-}
-
-func hashAndTruncate(input string) string {
-	// Extract the registry from the repository URL
-	repoUrl := strings.SplitN(input, "://", 2)
-	if len(repoUrl) != 2 {
-		fmt.Printf("invalid input format\n")
-		os.Exit(1)
-	}
-	repoName := repoUrl[1]
-	hash := sha256.New()
-	hash.Write([]byte(repoName))
-	hashString := hex.EncodeToString(hash.Sum(nil))
-
-	return hashString[:8]
-
 }
 
 func init() {
