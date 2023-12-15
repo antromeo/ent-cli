@@ -13,7 +13,7 @@
 - [ ] uses ko for build container images -> To handle several platform sha
 
 ### S (Should have)
-- [ ] cluster native, interaction with the Entando CRs
+- [x] cluster native, interaction with the Entando CRs
 - [ ] a command for entando backup
 - [ ] set cpu/ram pod limits
 - [ ] set http/https
