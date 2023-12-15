@@ -40,3 +40,16 @@ type LastJob struct {
 	Status           string     `json:"status"`
 	ComponentJobs    []struct{} `json:"componentJobs"`
 }
+
+type EcrComponentUninstallResponse struct {
+	Payload EcrComponentUninstall `json:"payload"`
+}
+
+type EcrComponentUninstall struct {
+	ID               string  `json:"id"`
+	ComponentID      string  `json:"componentId"`
+	ComponentName    string  `json:"componentName"`
+	ComponentVersion string  `json:"componentVersion"`
+	Progress         float64 `json:"progress"`
+	Status           string  `json:"status"`
+}

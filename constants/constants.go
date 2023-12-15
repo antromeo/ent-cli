@@ -38,8 +38,12 @@ var EntandoResourcesTemplates = []string{
 
 type EcrApisType struct {
 	Components string
+	Install    string
+	Uninstall  string
 }
 
 var EcrApis = EcrApisType{
 	Components: "components",
+	Install:    "components/{component}/install",
+	Uninstall:  "components/{component}/uninstall",
 }
