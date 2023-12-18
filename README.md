@@ -17,7 +17,8 @@
 - [ ] a command for entando backup
 - [ ] set cpu/ram pod limits
 - [ ] set http/https
-- [ ] set DB type(with entando-clients) 
+- [x] set DB type(with entando-clients) 
+- [ ] set DB internal or external
 - [ ] set internal or external keycloak 
 
 ### Co (Could have)
