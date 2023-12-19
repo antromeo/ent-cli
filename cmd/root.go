@@ -14,7 +14,9 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 var cfgFile string
@@ -27,10 +29,24 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
+	args := os.Args[1:]
+	if _, _, err := rootCmd.Find(args); err != nil && len(args) > 0 {
+		// not found, search executable in plugins
+		if pathPlugin, err := findEntPlugin(args); err != nil {
+			fmt.Printf("Error: unknown command \"%v\" for \"%v\"\n", args[0], rootCmd.Name())
+			os.Exit(1)
+		} else {
+			// run plugin
+			runEntPlugin(pathPlugin, args)
+		}
+
+	} else {
+		err := rootCmd.Execute()
+		if err != nil {
+			os.Exit(1)
+		}
 	}
+
 }
 
 func init() {
@@ -119,4 +135,23 @@ func addSubCommands() {
 	rootCmd.AddCommand(tenant.TenantCmd)
 	rootCmd.AddCommand(ecr.EcrCmd)
 	rootCmd.AddCommand(config.ConfigCmd)
+}
+
+func findEntPlugin(args []string) (string, error) {
+	pluginName := strings.Join([]string{rootCmd.Name(), args[0]}, "-")
+	if pathPlugin, err := exec.LookPath(pluginName); err != nil {
+		return "", err
+	} else {
+		return pathPlugin, nil
+	}
+}
+
+func runEntPlugin(pathPlugin string, args []string) {
+	cmd := exec.Command(pathPlugin, args[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

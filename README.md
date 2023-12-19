@@ -23,7 +23,11 @@
 
 ### Co (Could have)
 - [x] profile management
-- [ ] extensibility of plugins in a kubectl-style
+- [x] extensibility of plugins in a kubectl-style
 
 ### W (Won't have)
 - [ ] external dependencies
+
+### How to extend the cli through the use of plugins
+- rename your executable as `ent-cli-[commandName]`
+- move your executable to one of the dir in your system's `PATH`
