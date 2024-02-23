@@ -23,13 +23,15 @@ var bundleCmd = &cobra.Command{
 	Long:  "Management of new generation entando bundles",
 	Run: func(cmd *cobra.Command, args []string) {
 		entBundleImage := strings.Join([]string{constants.EntandoBundleRepository, constants.EntandoBundleCliVersion}, ":")
-		cmdLine := append([]string{"run", "-t", "-v", ".:/app", entBundleImage}, args...)
+		//cmdLine := append([]string{"run", "-t", "-v", ".:/app", entBundleImage}, args...)
 
 		if slices.Contains(args, "deploy") {
 			deployOnCluster(entBundleImage)
 		} else {
-			podmanCmd := exec.Command(constants.ContainerRuntime, cmdLine[0:]...)
-			output, _ := podmanCmd.CombinedOutput()
+			//newArgs := append(args, "--color")
+			entandoConfig := utilities.GetEntandoConfigInstance()
+			cmd := exec.Command(entandoConfig.GetEntBundleCliBinFilePath(), args...)
+			output, _ := cmd.CombinedOutput()
 			fmt.Printf(string(output))
 		}
 
@@ -46,9 +48,11 @@ func init() {
 }
 
 func deployOnCluster(entBundleImage string) {
-	cmdLine := append([]string{"run", "-t", "-v", ".:/app", entBundleImage}, "generate-cr")
-	podmanCmd := exec.Command(constants.ContainerRuntime, cmdLine[0:]...)
-	output, err := podmanCmd.CombinedOutput()
+	entandoConfig := utilities.GetEntandoConfigInstance()
+	//podmanCmd := exec.Command(entandoConfig.GetEntBundleCliBinFilePath(), args...)
+	//cmdLine := append([]string{"run", "-t", "-v", ".:/app", entBundleImage}, "generate-cr")
+	cmd := exec.Command(entandoConfig.GetEntBundleCliBinFilePath(), "generate-cr")
+	output, err := cmd.CombinedOutput()
 
 	if err != nil {
 		fmt.Println(string(output))

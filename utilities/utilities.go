@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"runtime"
 	"strings"
 )
 
@@ -122,3 +123,50 @@ func NormalizeName(input string) string {
 	regex := regexp.MustCompile(pattern)
 	return regex.ReplaceAllString(input, "-")
 }
+
+func getOS() string {
+	switch os := runtime.GOOS; os {
+	case "linux":
+		return "linux"
+	case "windows":
+		return "win"
+	case "darwin":
+		return "macos"
+	default:
+		return "unknown"
+	}
+}
+
+func getArchitecture() string {
+	switch arch := runtime.GOARCH; arch {
+	case "amd64":
+		return "x64"
+	case "arm64":
+		return "arm64"
+	default:
+		return "unknown"
+	}
+}
+
+// TODO: make multiplatform and multiarch
+type SourceBinary struct {
+	Name     string
+	Path     string
+	Tag      string
+	Sha      string
+	RepoName string
+}
+
+func (sb *SourceBinary) DetermineUrl() string {
+	return fmt.Sprintf("https://github.com/antromeo/%s/releases/download/%s/entando-bundle-cli-node14-%s-%s-%s", sb.RepoName, sb.Tag, getOS(), getArchitecture(), sb.Sha)
+}
+
+var EntBundleCliBinary = SourceBinary{
+	Name:     "entando-bundle-cli",
+	Path:     GetEntandoConfigInstance().GetEntBundleCliBinFilePath(),
+	Tag:      "v1.1.2",
+	Sha:      "2eb3bb76d2c86fc825957893620c2e05d3b20f5c",
+	RepoName: "entando-bundle-cli",
+}
+
+var EntExtBinaries = []SourceBinary{EntBundleCliBinary}

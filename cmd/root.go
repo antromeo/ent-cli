@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/antromeo/ent-cli/v2/cmd/app"
 	"github.com/antromeo/ent-cli/v2/cmd/config"
@@ -12,6 +13,7 @@ import (
 	"github.com/antromeo/ent-cli/v2/utilities"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -51,6 +53,7 @@ func Execute() {
 
 func init() {
 	createEntDirectories()
+	downloadBinaries()
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file")
@@ -88,8 +91,11 @@ func createEntDirectories() {
 		// Directory doesn't exist, create the default profile files.
 		createDefaultProfileDirectories()
 		createGlobalConfigFile()
-
 	}
+	if _, err := os.Stat(entandoConfig.GetEntBinFolderFilePath()); os.IsNotExist(err) {
+		createBinFolder()
+	}
+
 }
 
 func createDefaultProfileDirectories() {
@@ -111,6 +117,16 @@ func createDefaultProfileDirectories() {
 	utilities.WriteYamlToFile(entandoConfig.GetEntConfigFilePathByProfile(DefaultProfile), defaultProfileConfig)
 }
 
+func createBinFolder() {
+	entandoConfig := utilities.GetEntandoConfigInstance()
+	entBinFilePath := entandoConfig.GetEntBinFolderFilePath()
+
+	err := os.Mkdir(entBinFilePath, 0770)
+	if err != nil {
+		fmt.Printf("Error creating directory: %v\n", err)
+		return
+	}
+}
 func createGlobalConfigFile() {
 	entandoConfig := utilities.GetEntandoConfigInstance()
 	globalCfgFilePath := entandoConfig.GetEntGlobalConfigFilePath()
@@ -154,4 +170,41 @@ func runEntPlugin(pathPlugin string, args []string) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func downloadBinaries() {
+	//entandoConfig := utilities.GetEntandoConfigInstance()
+	//entBinFilePath := entandoConfig.GetEntBinFolderFilePath()
+	for _, extBin := range utilities.EntExtBinaries {
+		// TODO: make for all binaries
+		//entBundleCliPath := path.Join(entBinFilePath, "entando-bundle-cli")
+		if _, err := os.Stat(extBin.Path); os.IsNotExist(err) {
+			// TODO: url dynamic and print a message of waiting, change repository, make the same for entando-bundler (use node-17)
+			// TODO: when kubectl is not aligned, the errors are not good
+			// TODO: set var as version for bundle-cli
+			// TODO: store the files in profile bin folder (to create)
+			fmt.Println("Loading binaries...")
+			url := extBin.DetermineUrl()
+			response := utilities.HttpGet(url)
+
+			// Create the output file
+			out, err := os.Create(extBin.Path)
+			out.Chmod(0777)
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
+			defer out.Close()
+
+			// Copy the response body to the output file
+			_, err = io.Copy(out, bytes.NewReader(response))
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
+
+			fmt.Println("File downloaded successfully.")
+		}
+	}
+
 }

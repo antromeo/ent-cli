@@ -41,6 +41,14 @@ func (ec *EntandoConfig) GetEntFolderFilePath() string {
 	return filepath.Join(ec.entandoHomeDir, EntFolder)
 }
 
+func (ec *EntandoConfig) GetEntBinFolderFilePath() string {
+	return filepath.Join(ec.GetEntFolderFilePath(), "bin")
+}
+
+func (ec *EntandoConfig) GetEntBundleCliBinFilePath() string {
+	return filepath.Join(ec.GetEntBinFolderFilePath(), "entando-bundle-cli")
+}
+
 func (ec *EntandoConfig) GetEntGlobalConfigFilePath() string {
 	globalCfg := strings.Join([]string{GlobalConfigFileName, ec.extension}, ".")
 	return filepath.Join(ec.GetEntFolderFilePath(), globalCfg)
