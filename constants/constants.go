@@ -5,13 +5,11 @@ import (
 )
 
 const (
-	DefaultProfile          = "default"
-	EntFolder               = ".ent"
-	ProfilesFolder          = "profiles"
-	GlobalConfigFileName    = "global-cfg"
-	ConfigFile              = "cfg"
-	ContainerRuntime        = "podman"
-	EntandoBundleRepository = "docker.io/romeocontainers/entando-bundle-cli"
+	DefaultProfile       = "default"
+	EntFolder            = ".ent"
+	ProfilesFolder       = "profiles"
+	GlobalConfigFileName = "global-cfg"
+	ConfigFile           = "cfg"
 )
 
 type Config struct {
