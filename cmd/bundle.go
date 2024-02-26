@@ -28,7 +28,9 @@ var bundleCmd = &cobra.Command{
 		if slices.Contains(args, "deploy") {
 			deployOnCluster(entBundleImage)
 		} else {
-			//newArgs := append(args, "--color")
+			if len(args) > 0 {
+				args = append(args, "--color=always")
+			}
 			entandoConfig := utilities.GetEntandoConfigInstance()
 			cmd := exec.Command(entandoConfig.GetEntBundleCliBinFilePath(), args...)
 			output, _ := cmd.CombinedOutput()
