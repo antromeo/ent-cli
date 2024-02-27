@@ -22,7 +22,7 @@ jobs:
           go-version: ${{ matrix.go-version }}
 
       - name: Build for ${{ matrix.platform }}
-        run: GOOS=$(echo ${{ matrix.platform }} | cut -d'/' -f1) GOARCH=$(echo ${{ matrix.platform }} | cut -d'/' -f2) go build -v -o ent-cli-${{ matrix.platform }} ./...
+        run: GOOS=$(echo ${{ matrix.platform }} | cut -d'/' -f1) GOARCH=$(echo ${{ matrix.platform }} | cut -d'/' -f2) go build -v -o ent-cli-${{ matrix.platform }}
 
       - name: Upload release asset
         id: upload-release-asset
