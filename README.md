@@ -4,11 +4,11 @@
 
 ### Mo (Must have) 
 - [x] quickstart with minikube and tekton pipeline crd
-- [ ] ent bundle with podman -> replace with binary version obtained with pkg
+- [x] ent bundle with podman -> replace with binary version obtained with pkg
 - [x] clients to manage all Entando CRs
 - [ ] provide executables 
 - [ ] migrates the commands
-- [ ] modularity
+- [x] modularity: kubectl-style
 - [ ] strict versioning
 - [ ] uses ko for build container images -> To handle several platform sha
 
