@@ -22,6 +22,13 @@ var bundleCmd = &cobra.Command{
 	Long:  "Management of new generation entando bundles",
 	Run: func(cmd *cobra.Command, args []string) {
 
+		os.Setenv("ENTANDO_BUNDLE_CLI_BIN_NAME", "ent-cli bundle")
+
+		if slices.Contains(args, "--debug") {
+			os.Setenv("ENTANDO_CLI_DEBUG", "true")
+			args = removeValue(args, "--debug")
+		}
+
 		if slices.Contains(args, "deploy") {
 			deployOnCluster()
 		} else {
@@ -85,4 +92,13 @@ func normalizeYaml(obj []byte) []byte {
 		obj = obj[index:]
 	}
 	return obj
+}
+
+func removeValue(args []string, value string) []string {
+	for i := 0; i < len(args); i++ {
+		if args[i] == value {
+			return append(args[:i], args[i+1:]...)
+		}
+	}
+	return args
 }
