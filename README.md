@@ -6,7 +6,7 @@
 - [x] quickstart with minikube and tekton pipeline crd
 - [x] ent bundle with podman -> replace with binary version obtained with pkg
 - [x] clients to manage all Entando CRs
-- [ ] provide executables 
+- [x] provide executables cross-platform 
 - [ ] migrates the commands
 - [x] modularity: kubectl-style
 - [ ] strict versioning
