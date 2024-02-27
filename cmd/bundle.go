@@ -25,14 +25,11 @@ var bundleCmd = &cobra.Command{
 		if slices.Contains(args, "deploy") {
 			deployOnCluster()
 		} else {
-			/* TODO: fix
-			if len(args) > 0 {
-				args = append(args, "--color=always")
-			}*/
 			entandoConfig := utilities.GetEntandoConfigInstance()
 			cmd := exec.Command(entandoConfig.GetEntBundleCliBinFilePath(), args...)
-			output, _ := cmd.CombinedOutput()
-			fmt.Printf(string(output))
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			_ = cmd.Run()
 		}
 
 		if slices.Contains(args, "--help") {
@@ -78,7 +75,7 @@ func deployOnCluster() {
 		fmt.Printf("Error deploying the bundle: %v\n", err)
 		os.Exit(1)
 	} else {
-		fmt.Printf("Bundle successfully deployed")
+		fmt.Printf("Bundle successfully deployed\n")
 	}
 }
 

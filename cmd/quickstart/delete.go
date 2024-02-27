@@ -1,8 +1,8 @@
 package quickstart
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
+	"os"
 	"os/exec"
 )
 
@@ -23,8 +23,9 @@ var deleteCmd = &cobra.Command{
 		}
 
 		execCmd := exec.Command("minikube", cmdLineArgs[0:]...)
-		output, _ := execCmd.CombinedOutput()
-		fmt.Printf(string(output))
+		execCmd.Stdout = os.Stdout
+		execCmd.Stderr = os.Stderr
+		_ = execCmd.Run()
 	},
 }
 

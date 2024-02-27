@@ -37,8 +37,10 @@ var startCmd = &cobra.Command{
 		}
 
 		execCmd := exec.Command("minikube", cmdLineArgs[0:]...)
-		output, err := execCmd.CombinedOutput()
-		fmt.Println(string(output))
+		execCmd.Stdout = os.Stdout
+		execCmd.Stderr = os.Stderr
+
+		err := execCmd.Run()
 		if err != nil {
 			fmt.Printf("Error creating local instance: %v\n", err)
 			os.Exit(1)
@@ -48,14 +50,14 @@ var startCmd = &cobra.Command{
 
 		// setting profile
 		execCmd = exec.Command("minikube", "profile", name)
-		_, err = execCmd.CombinedOutput()
+		err = execCmd.Run()
 		if err != nil {
 			fmt.Printf("Error setting profile: %v\n", err)
 			os.Exit(1)
 		}
 
 		execCmd = exec.Command("minikube", "ip", "-p", name)
-		output, err = execCmd.CombinedOutput()
+		output, err := execCmd.CombinedOutput()
 		if err != nil {
 			fmt.Printf("Error getting IP from local instance: %v\n", err)
 			os.Exit(1)
@@ -65,7 +67,7 @@ var startCmd = &cobra.Command{
 		fmt.Printf("instance available at address: %s\n", instanceIp)
 
 		execCmd = exec.Command("minikube", "kubectl", "create", "namespace", namespace)
-		_, err = execCmd.CombinedOutput()
+		err = execCmd.Run()
 		if err != nil {
 			fmt.Printf("Error creating namespace: %v\n", err)
 			os.Exit(1)
@@ -82,7 +84,7 @@ var startCmd = &cobra.Command{
 		if enableTekton {
 			tektonTemplateUrl := "https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml"
 			execCmd := exec.Command("minikube", "kubectl", "--", "apply", "-f", tektonTemplateUrl)
-			_, err = execCmd.CombinedOutput()
+			err = execCmd.Run()
 			if err != nil {
 				fmt.Printf("Error applied the tekton templates: %v\n", err)
 				os.Exit(1)
@@ -109,7 +111,7 @@ func applyEntandoTemplates(namespace string, version string) {
 	for _, urlTemplate := range constants.EntandoResourcesTemplates {
 		templateUrl := fmt.Sprintf(urlTemplate, version)
 		execCmd := exec.Command("minikube", "kubectl", "--", "-n", namespace, "apply", "-f", templateUrl)
-		_, err := execCmd.CombinedOutput()
+		err := execCmd.Run()
 		if err != nil {
 			fmt.Printf("Error applied the templates: %v\n", err)
 			os.Exit(1)
@@ -131,7 +133,7 @@ func applyEntandoApp(namespace string, ip string) {
 		os.Exit(1)
 	}
 	execCmd := exec.Command("minikube", "kubectl", "--", "apply", "-f", entandoAppFilePath)
-	_, err = execCmd.CombinedOutput()
+	err = execCmd.Run()
 	if err != nil {
 		fmt.Printf("Error applied EntandoApp: %v\n", err)
 		os.Exit(1)
